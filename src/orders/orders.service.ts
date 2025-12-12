@@ -258,6 +258,10 @@ export class OrdersService {
     }
 
     const reference = `ZOZ-${order.orderNumber}-${Date.now()}`;
+    // Construct callback URL with orderId for easy order retrieval
+    const baseCallbackUrl = process.env.PAYSTACK_CALLBACK_URL || 'http://localhost:3000/payment/confirmation';
+    const callbackUrl = `${baseCallbackUrl}?orderId=${order._id.toString()}`;
+    
     const payload = {
       amount: Math.round(order.totalAmount * 100), // kobo
       email: order.contactEmail || 'customer@zoozu.ng',
@@ -268,7 +272,7 @@ export class OrdersService {
         userId,
         orderNumber: order.orderNumber,
       },
-      callback_url: process.env.PAYSTACK_CALLBACK_URL,
+      callback_url: callbackUrl,
     };
 
     const resp = await fetch('https://api.paystack.co/transaction/initialize', {
