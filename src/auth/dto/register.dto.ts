@@ -18,7 +18,7 @@ export class RegisterDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: '+2348012345678', required: false })
+  @ApiProperty({ example: '+2347068209546', required: false })
   @IsString()
   @IsOptional()
   phone?: string;

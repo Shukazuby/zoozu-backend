@@ -12,7 +12,7 @@ export class CreateBespokeFittingDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: '+2348012345678', description: 'Phone number' })
+  @ApiProperty({ example: '+2347068209546', description: 'Phone number' })
   @IsString()
   @IsNotEmpty()
   phone: string;

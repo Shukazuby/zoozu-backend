@@ -13,9 +13,9 @@ export class ContactService {
     // Return company contact information from environment variables or defaults
     const contactInfo = {
       email: process.env.CONTACT_EMAIL || 'info@zoozu_ng.com',
-      phone: process.env.CONTACT_PHONE || '+234 801 234 5678',
+      phone: process.env.CONTACT_PHONE || '+234 706 820 9546',
       address: process.env.CONTACT_ADDRESS || '123 Fashion Ave, Ikoyi, Lagos, Nigeria',
-      whatsapp: process.env.CONTACT_WHATSAPP || process.env.CONTACT_PHONE || '+234 801 234 5678',
+      whatsapp: process.env.CONTACT_WHATSAPP || process.env.CONTACT_PHONE || '+234 706 820 9546',
       socialLinks: {
         facebook: process.env.SOCIAL_FACEBOOK || '',
         instagram: process.env.SOCIAL_INSTAGRAM || '',
