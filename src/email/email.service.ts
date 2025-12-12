@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { sendEmail } from '../utils/utils.functions';
-import { getWelcomeEmailTemplate, getOrderConfirmationEmailTemplate, WelcomeEmailData, OrderConfirmationEmailData } from './email-templates';
+import { getWelcomeEmailTemplate, getOrderConfirmationEmailTemplate, getNewsletterSubscriptionEmailTemplate, WelcomeEmailData, OrderConfirmationEmailData, NewsletterSubscriptionEmailData } from './email-templates';
 
 @Injectable()
 export class EmailService {
@@ -57,6 +57,33 @@ export class EmailService {
     } catch (error) {
       this.logger.error(`Error preparing order confirmation email for ${data.userEmail}:`, error);
       // Don't throw - email failure shouldn't break order processing
+    }
+  }
+
+  /**
+   * Send newsletter subscription confirmation email
+   * Non-blocking: runs asynchronously without blocking the API response
+   */
+  async sendNewsletterSubscriptionEmail(data: NewsletterSubscriptionEmailData): Promise<void> {
+    try {
+      const html = getNewsletterSubscriptionEmailTemplate(data);
+      const subject = 'Welcome to the Inner Circle!';
+      
+      // Send email asynchronously (fire and forget)
+      sendEmail(html, subject, data.userEmail)
+        .then((result) => {
+          if (result.success) {
+            this.logger.log(`Newsletter subscription email sent successfully to ${data.userEmail}`);
+          } else {
+            this.logger.warn(`Failed to send newsletter subscription email to ${data.userEmail}: ${result.message}`);
+          }
+        })
+        .catch((error) => {
+          this.logger.error(`Error sending newsletter subscription email to ${data.userEmail}:`, error);
+        });
+    } catch (error) {
+      this.logger.error(`Error preparing newsletter subscription email for ${data.userEmail}:`, error);
+      // Don't throw - email failure shouldn't break subscription
     }
   }
 }

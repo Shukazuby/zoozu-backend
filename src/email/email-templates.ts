@@ -22,6 +22,11 @@ export interface OrderConfirmationEmailData {
   expectedDelivery?: string;
 }
 
+export interface NewsletterSubscriptionEmailData {
+  userName?: string;
+  userEmail: string;
+}
+
 const baseEmailStyles = `
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -205,6 +210,79 @@ export function getOrderConfirmationEmailTemplate(data: OrderConfirmationEmailDa
       <p style="margin-top: 10px;">
         <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}" style="color: #d6b25e; text-decoration: none;">Visit our website</a> | 
         <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}/contact" style="color: #d6b25e; text-decoration: none;">Contact Support</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+}
+
+export function getNewsletterSubscriptionEmailTemplate(data: NewsletterSubscriptionEmailData): string {
+  const displayName = data.userName || 'Valued Subscriber';
+  
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Welcome to the Inner Circle</title>
+  ${baseEmailStyles}
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Welcome to the Inner Circle!</h1>
+    </div>
+    <div class="email-body">
+      <p style="font-size: 16px; margin-bottom: 20px;">Hello ${displayName},</p>
+      
+      <p style="margin-bottom: 20px;">
+        Thank you for joining the Inner Circle! We're thrilled to have you as part of our exclusive community.
+      </p>
+      
+      <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
+        <p style="font-weight: 600; color: #92400e; margin-bottom: 10px;">What's Next?</p>
+        <p style="color: #92400e; font-size: 14px; line-height: 1.8;">
+          As a member of the Inner Circle, you'll be the first to know about:<br>
+          • New collection launches<br>
+          • Exclusive private sales<br>
+          • Special promotions and discounts<br>
+          • Style tips and fashion inspiration<br>
+          • Behind-the-scenes content
+        </p>
+      </div>
+      
+      <p style="margin-bottom: 15px;">
+        We promise to only send you the most valuable updates and never spam your inbox. You can unsubscribe at any time if you change your mind.
+      </p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}/collections" class="button">
+          Explore Our Collections
+        </a>
+      </div>
+      
+      <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+        Stay tuned for exciting updates coming your way soon!
+      </p>
+      
+      <p style="margin-top: 20px;">
+        Welcome aboard!<br>
+        <strong>The Zoozu Team</strong>
+      </p>
+    </div>
+    <div class="email-footer">
+      <p>© ${new Date().getFullYear()} Zoozu. All rights reserved.</p>
+      <p style="margin-top: 10px;">
+        <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}" style="color: #d6b25e; text-decoration: none;">Visit our website</a> | 
+        <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}/contact" style="color: #d6b25e; text-decoration: none;">Contact Support</a>
+      </p>
+      <p style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+        You're receiving this email because you subscribed to the Inner Circle newsletter. 
+        <a href="${process.env.FRONTEND_URL || 'https://zoozu.ng'}/newsletter/unsubscribe?email=${encodeURIComponent(data.userEmail)}" style="color: #d6b25e; text-decoration: none;">Unsubscribe</a>
       </p>
     </div>
   </div>
