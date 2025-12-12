@@ -30,7 +30,7 @@ export class UsersService {
 
     await user.save();
 
-    const token = this.generateToken(user._id.toString(), user.email);
+    const token = this.generateToken(user._id.toString(), user.email, user.role);
 
     // Send welcome email asynchronously (non-blocking)
     this.emailService.sendWelcomeEmail({
@@ -72,7 +72,7 @@ export class UsersService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = this.generateToken(user._id.toString(), user.email);
+    const token = this.generateToken(user._id.toString(), user.email, user.role);
 
     return {
       success: true,
@@ -143,9 +143,9 @@ export class UsersService {
     };
   }
 
-  private generateToken(userId: string, email: string): string {
+  private generateToken(userId: string, email: string, role: string): string {
     return jwt.sign(
-      { id: userId, email },
+      { id: userId, email, role },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '7d' }
     );

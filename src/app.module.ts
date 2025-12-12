@@ -17,6 +17,7 @@ import { PaystackModule } from './paystack/paystack.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ShippingModule } from './shipping/shipping.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { AdminModule } from './admin/admin.module';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ dotenv.config();
     CloudinaryModule,
     ShippingModule,
     NewsletterModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
