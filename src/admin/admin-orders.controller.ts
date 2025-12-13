@@ -26,6 +26,13 @@ export class AdminOrdersController {
     return this.adminService.getAllOrders(page, limit, { status, paymentStatus, search });
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get order by ID' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Order retrieved successfully' })
+  async getOrderById(@Param('id') id: string): Promise<BaseResponseTypeDTO> {
+    return this.adminService.getOrderById(id);
+  }
+
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update order status' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Order status updated successfully' })

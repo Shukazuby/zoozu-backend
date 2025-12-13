@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order, OrderDocument } from '../schemas/order.schema';
@@ -122,6 +122,7 @@ export class AdminService {
             status: order.status,
             paymentStatus: order.paymentStatus,
             createdAt: order.createdAt,
+            contactEmail: (order as any).contactEmail || null,
             user: order.userId ? {
               fullName: (order.userId as any).fullName,
               email: (order.userId as any).email,
@@ -357,6 +358,28 @@ export class AdminService {
           limit,
           totalPages: Math.ceil(total / limit),
         },
+      };
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getOrderById(id: string): Promise<BaseResponseTypeDTO> {
+    try {
+      const order = await this.orderModel
+        .findById(id)
+        .populate('userId', 'fullName email')
+        .lean();
+
+      if (!order) {
+        throw new NotFoundException('Order not found');
+      }
+
+      return {
+        success: true,
+        code: HttpStatus.OK,
+        message: 'Order retrieved successfully',
+        data: order,
       };
     } catch (error: any) {
       throw error;
