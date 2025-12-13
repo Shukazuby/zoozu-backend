@@ -220,6 +220,7 @@ export class ProductController {
         tag: { type: 'string', example: 'Bespoke' },
         isNew: { type: 'boolean', example: false },
         isFeatured: { type: 'boolean', example: false },
+        isActive: { type: 'boolean', example: true },
         image: {
           type: 'string',
           format: 'binary',
@@ -232,7 +233,7 @@ export class ProductController {
     @Param('id') id: string,
     @Body() payload: any,
     @UploadedFile() file?: Express.Multer.File,
-  ){
+  ): Promise<BaseResponseTypeDTO> {
     // Transform array fields from multipart/form-data
     const transformArrayField = (value: any): string[] => {
       if (!value) return [];

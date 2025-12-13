@@ -88,67 +88,114 @@ export class ProductService {
     productId: string,
     payload: CreateProductDto,
     file?: Express.Multer.File,
-  ): Promise<Product> {
-    const product = await this.productModel.findOne({ _id: productId });
+  ): Promise<BaseResponseTypeDTO> {
+    try {
+      const product = await this.productModel.findOne({ _id: productId });
 
-    if (!product) {
-      throw new NotFoundException(
-        `Product not found, therefore cannot be updated.`,
-      );
-    }
-
-    if ('name' in payload) {
-      product.name = payload.name;
-    }
-
-    if ('price' in payload) {
-      product.price = payload.price;
-    }
-
-    if ('description' in payload) {
-      product.description = payload.description;
-    }
-
-    // Parse all array fields properly
-    if ('images' in payload && payload.images !== undefined) {
-      product.images = this.parseArrayField(payload.images);
-    }
-    if ('categories' in payload && payload.categories !== undefined) {
-      product.categories = this.parseArrayField(payload.categories);
-    }
-    if ('sizes' in payload && payload.sizes !== undefined) {
-      product.sizes = this.parseArrayField(payload.sizes);
-    }
-    if ('colors' in payload && payload.colors !== undefined) {
-      product.colors = this.parseArrayField(payload.colors);
-    }
-
-    if ('isNew' in payload) {
-      product.isNew = payload.isNew;
-    }
-
-    if ('isFeatured' in payload) {
-      product.isFeatured = payload.isFeatured;
-    }
-
-    // If a file is uploaded, add it to the images array
-    if (file) {
-      const uploadResult = await this.cloudinaryService.uploadImage(file);
-      if (!product.images || product.images.length === 0) {
-        product.images = [uploadResult.url];
-      } else {
-        product.images.push(uploadResult.url);
+      if (!product) {
+        throw new NotFoundException(
+          `Product not found, therefore cannot be updated.`,
+        );
       }
+
+      if ('name' in payload) {
+        product.name = payload.name;
+      }
+
+      if ('price' in payload) {
+        product.price = typeof payload.price === 'string' ? parseFloat(payload.price) : payload.price;
+      }
+
+      if ('description' in payload) {
+        product.description = payload.description;
+      }
+
+      // Parse all array fields properly
+      if ('images' in payload && payload.images !== undefined) {
+        product.images = this.parseArrayField(payload.images);
+      }
+      if ('categories' in payload && payload.categories !== undefined) {
+        product.categories = this.parseArrayField(payload.categories);
+      }
+      if ('sizes' in payload && payload.sizes !== undefined) {
+        product.sizes = this.parseArrayField(payload.sizes);
+      }
+      if ('colors' in payload && payload.colors !== undefined) {
+        product.colors = this.parseArrayField(payload.colors);
+      }
+
+      if ('isNew' in payload) {
+        const isNewValue = payload.isNew;
+        product.isNew = typeof isNewValue === 'string' ? isNewValue === 'true' : Boolean(isNewValue);
+      }
+
+      if ('isFeatured' in payload) {
+        const isFeaturedValue = payload.isFeatured;
+        product.isFeatured = typeof isFeaturedValue === 'string' ? isFeaturedValue === 'true' : Boolean(isFeaturedValue);
+      }
+
+      if ('isAvailable' in payload) {
+        const isAvailableValue = payload.isAvailable;
+        product.isAvailable = typeof isAvailableValue === 'string' ? isAvailableValue === 'true' : Boolean(isAvailableValue);
+      }
+
+      if ('isBespoke' in payload) {
+        const isBespokeValue = payload.isBespoke;
+        product.isBespoke = typeof isBespokeValue === 'string' ? isBespokeValue === 'true' : Boolean(isBespokeValue);
+      }
+
+      if ('isPreOrder' in payload) {
+        const isPreOrderValue = payload.isPreOrder;
+        product.isPreOrder = typeof isPreOrderValue === 'string' ? isPreOrderValue === 'true' : Boolean(isPreOrderValue);
+      }
+
+      if ('isActive' in payload) {
+        const isActiveValue = payload.isActive;
+        product.isActive = typeof isActiveValue === 'string' ? isActiveValue === 'true' : Boolean(isActiveValue);
+      }
+
+      if ('gender' in payload) {
+        product.gender = payload.gender;
+      }
+
+      if ('stock' in payload) {
+        product.stock = typeof payload.stock === 'string' ? parseInt(payload.stock, 10) : payload.stock;
+      }
+
+      if ('badge' in payload) {
+        product.badge = payload.badge;
+      }
+
+      if ('tag' in payload) {
+        product.tag = payload.tag;
+      }
+
+      // If a file is uploaded, add it to the images array
+      if (file) {
+        const uploadResult = await this.cloudinaryService.uploadImage(file);
+        if (!product.images || product.images.length === 0) {
+          product.images = [uploadResult.url];
+        } else {
+          product.images.push(uploadResult.url);
+        }
+      }
+
+      // Ensure images is always an array before saving
+      if (!product.images || !Array.isArray(product.images)) {
+        product.images = [];
+      }
+
+      const updatedProduct = await product.save();
+
+      return {
+        data: updatedProduct,
+        success: true,
+        code: HttpStatus.OK,
+        message: 'Product updated successfully',
+      };
+    } catch (ex) {
+      throw ex;
     }
-
-    // Ensure images is always an array before saving
-    if (!product.images || !Array.isArray(product.images)) {
-      product.images = [];
-    }
-
-    const updatedProduct = await product.save();
-
-    return updatedProduct.save();
   }
 
   async findAllProducts(
