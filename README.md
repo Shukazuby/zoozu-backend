@@ -1,73 +1,56 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Zoozu (Backend) 👗👔🛍️
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Zoozu is a high-performance, enterprise-grade e-commerce backend designed for a premium, hybrid fashion brand. The architecture seamlessly unifies two distinct business models: standard B2C retail (**ready-to-wear storefront collections**) and bespoke tailoring services (**custom-made apparel workflows** combined with an **integrated fitting appointment system**).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Built with automated, secure online payment pipelines and state-driven order tracking, the platform is optimized for exceptional transactional throughput, data integrity, and cross-gender catalog management.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Technical Architecture & Stack
 
-## Installation
+* **Framework:** **NestJS / Node.js** (TypeScript) – Engineered using a highly structured, decoupled module pattern (`UserModule`, `ProductModule`, `OrderModule`, `BookingModule`).
+* **Payment Architecture:** **Paystack / Stripe API** *(👈 Replace with the one you used)* – Integrated webhook handling and secure server-to-server transaction validation for real-time order processing.
+* **Database & Relationships:** [PostgreSQL / MongoDB - *Insert Database here*] – Robust data schema managing inventory state-locking to prevent race conditions during checkout.
+* **Authentication & Access Control:** **JWT Auth** backed by Role-Based Access Control (RBAC) to differentiate between standard clients, retail managers, and master tailors.
 
+---
+
+## ✨ Core Business Workflows & Engineering Highlights
+
+* **🛒 Hybrid Commerce Engine:** Supports simultaneous item checkout for ready-to-wear items (instant inventory decrementing) and custom-order item configurations (capturing measurements, fabric preferences, and custom specs).
+* **📅 Real-Time Fitting Scheduling System:** A calendar allocation engine allowing clients to book physical or virtual fittings. Built-in backend availability rules prevent double-bookings or scheduling conflicts for styling staff.
+* **💳 Automated Webhook & Payment Engine:** Implemented bulletproof, idempotent payment processing via webhooks to automatically shift order statuses from `Pending Payment` ➡️ `Processing` upon ledger verification.
+* **📦 Sophisticated State Machine:** Tracks the lifecycle of custom clothing: `Order Placed` ➡️ `Fitting Scheduled` ➡️ `In Production` ➡️ `Dispatched`.
+
+---
+
+## 🚀 REST API Architecture Overview
+
+The backend API follows strict REST guidelines, using DTOs (Data Transfer Objects) for input mapping and strict validation rules.
+
+### 🔐 Identity & Access Control
+* `POST /api/v1/auth/register` - Creates a new customer account.
+* `POST /api/v1/auth/login` - Authenticates user and issues a stateless session JWT.
+
+### 🛍️ Storefront & Inventory
+* `GET /api/v1/products` - Fetches catalog with dynamic query filtering (by collection, gender, size, or custom/ready-to-wear tags).
+* `POST /api/v1/orders/checkout` - Initializes an online payment intent and locks the shopping cart items. 🔒
+
+### 🪡 Custom Orders & Bookings
+* `POST /api/v1/orders/custom` - Submits a custom-tailored garment specification report. 🔒
+* `POST /api/v1/fittings/book` - Claims an open calendar slot for a physical or virtual styling session. 🔒
+* `POST /api/v1/payments/webhook` - Public-facing immutable endpoint for payment gateway provider callbacks to verify transaction logs.
+
+---
+
+## ⚙️ Local Setup and Installation
+
+### Prerequisites
+* Ensure you have **Node.js (v18+)** and your database engine running locally.
+* Valid developer credentials for your chosen payment gateway provider.
+
+### 1. Installation
 ```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+git clone [https://github.com/Shukazuby/zoozu-backend.git](https://github.com/Shukazuby/zoozu-backend.git)
+cd zoozu-backend
+npm install
